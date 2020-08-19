@@ -255,7 +255,8 @@ export class UserManager extends OidcClient {
 
         return this._signin(args, this._iframeNavigator, {
             startUrl: url,
-            silentRequestTimeout: args.silentRequestTimeout || this.settings.silentRequestTimeout
+            silentRequestTimeout: args.silentRequestTimeout || this.settings.silentRequestTimeout,
+            iframeOrigin: this.settings.iframeOrigin
         }).then(user => {
             if (user) {
                 if (user.profile && user.profile.sub) {
@@ -270,8 +271,8 @@ export class UserManager extends OidcClient {
         });
     }
 
-    signinSilentCallback(url) {
-        return this._signinCallback(url, this._iframeNavigator).then(user => {
+    signinSilentCallback(url, iframeParentOrigin) {
+        return this._signinCallback(url, this._iframeNavigator, iframeParentOrigin).then(user => {
             if (user) {
                 if (user.profile && user.profile.sub) {
                     Log.info("UserManager.signinSilentCallback: successful, signed in sub: ", user.profile.sub);
@@ -333,7 +334,8 @@ export class UserManager extends OidcClient {
 
         return this._signinStart(args, this._iframeNavigator, {
             startUrl: url,
-            silentRequestTimeout: args.silentRequestTimeout || this.settings.silentRequestTimeout
+            silentRequestTimeout: args.silentRequestTimeout || this.settings.silentRequestTimeout,
+            iframeOrigin: this.settings.iframeOrigin
         }).then(navResponse => {
             return this.processSigninResponse(navResponse.url).then(signinResponse => {
                 Log.debug("UserManager.querySessionStatus: got signin response");
@@ -420,9 +422,9 @@ export class UserManager extends OidcClient {
             });
         });
     }
-    _signinCallback(url, navigator) {
-        Log.debug("UserManager._signinCallback");
-        return navigator.callback(url);
+    _signinCallback(url, navigator, iframeParentOrigin) {
+        Log.debug("_signinCallback");
+        return navigator.callback(url, iframeParentOrigin);
     }
 
     signoutRedirect(args = {}) {

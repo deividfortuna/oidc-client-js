@@ -24,6 +24,7 @@ export class UserManagerSettings extends OidcClientSettings {
         automaticSilentRenew = false,
         validateSubOnSilentRenew = false,
         includeIdTokenInSilentRenew = true,
+        iframeOrigin = null,
         monitorSession = true,
         monitorAnonymousSession = false,
         checkSessionInterval = DefaultCheckSessionInterval,
@@ -48,6 +49,8 @@ export class UserManagerSettings extends OidcClientSettings {
         this._automaticSilentRenew = automaticSilentRenew;
         this._validateSubOnSilentRenew = validateSubOnSilentRenew;
         this._includeIdTokenInSilentRenew = includeIdTokenInSilentRenew;
+
+        this._iframeOrigin = iframeOrigin;
         this._accessTokenExpiringNotificationTime = accessTokenExpiringNotificationTime;
 
         this._monitorSession = monitorSession;
@@ -100,6 +103,10 @@ export class UserManagerSettings extends OidcClientSettings {
     get includeIdTokenInSilentRenew() {
         return this._includeIdTokenInSilentRenew;
     }
+    get iframeOrigin() {
+        return this._iframeOrigin;
+    }
+
     get accessTokenExpiringNotificationTime() {
         return this._accessTokenExpiringNotificationTime;
     }

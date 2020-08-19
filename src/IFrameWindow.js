@@ -25,6 +25,9 @@ export class IFrameWindow {
         this._frame.style.width = 0;
         this._frame.style.height = 0;
 
+        // optional - allowing custom origin
+        this._iframeOrigin = params.iframeOrigin; 
+
         window.document.body.appendChild(this._frame);
     }
 
@@ -86,7 +89,7 @@ export class IFrameWindow {
         Log.debug("IFrameWindow.message");
 
         if (this._timer &&
-            e.origin === this._origin &&
+            e.origin === this.iframeOrigin &&
             e.source === this._frame.contentWindow
         ) {
             let url = e.data;
@@ -99,16 +102,18 @@ export class IFrameWindow {
         }
     }
 
-    get _origin() {
-        return location.protocol + "//" + location.host;
+    get iframeOrigin() {
+        Log.debug(this._iframeOrigin || (location.protocol + "//" + location.host));
+        return (this._iframeOrigin || (location.protocol + "//" + location.host));
     }
 
-    static notifyParent(url) {
+    // optional - iframeParentOrigin - allowing custom origin
+    static notifyParent(url, iframeParentOrigin) {
         Log.debug("IFrameWindow.notifyParent");
         url = url || window.location.href;
         if (url) {
             Log.debug("IFrameWindow.notifyParent: posting url message to parent");
-            window.parent.postMessage(url, location.protocol + "//" + location.host);
+            window.parent.postMessage(url, (iframeParentOrigin || (location.protocol + "//" + location.host)));
         }
     }
 }
